@@ -1,0 +1,46 @@
+name: nexus_build
+description: NexusBuild - Professional Construction Estimator (100% Offline)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Offline local storage (saves everything on the phone, no internet)
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.2
+
+  # Password hashing for local login security
+  crypto: ^3.0.3
+
+  # Generates unique IDs for each project/record
+  uuid: ^4.4.0
+
+  # Date and number formatting
+  intl: ^0.19.0
+
+  # Charts for the Analytics screen
+  fl_chart: ^0.69.0
+
+  # PDF generation and sharing
+  pdf: ^3.11.0
+  printing: ^5.13.1
+  share_plus: ^9.0.0
+
+  # Icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.9
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
