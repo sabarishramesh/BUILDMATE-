@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
-import '../../services/material_rates_service.dart';
 import '../../widgets/common_widgets.dart';
 
 class MaterialRatesScreen extends StatefulWidget {

@@ -56,7 +56,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
                     child: GestureDetector(
                       onTap: () => setState(() => _plan = p),
                       child: Container(
-                        margin: const EdgeInsets.only(right: p == 'Monthly' ? 8 : 0),
+                        margin: EdgeInsets.only(right: p == 'Monthly' ? 8 : 0),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           color: _plan == p ? AppColors.primary : AppColors.white,

@@ -15,7 +15,6 @@ class _UnitConverterScreenState extends State<UnitConverterScreen>
   late TabController _tabs;
   final _fromCtrl = TextEditingController(text: '2400');
   int _fromIdx = 0, _toIdx = 1;
-  bool _swapped = false;
 
   final _categories = {
     'Area':     {'sq.ft': 1.0,     'sq.m': 0.0929,   'sq.in': 144.0,   'acres': 0.0000229},

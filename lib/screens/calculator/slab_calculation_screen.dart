@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
-import '../../services/project_service.dart';
 import '../../services/hive_service.dart';
 import '../../widgets/common_widgets.dart';
 

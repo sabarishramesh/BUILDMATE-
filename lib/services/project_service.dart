@@ -80,10 +80,7 @@ class ProjectService {
     p.slabVolumeM3 = areaSqm * slabThicknessM * p.numberOfFloors;
 
     // ── Wall volume ──────────────────────────────────────────────────────────
-    // Estimate perimeter as 4 × √(area) (rough approximation for a square plan)
-    final perimeterM = 4 * (areaSqm <= 0 ? 1 : areaSqm) * 0.25 * // simplified
-        (areaSqm > 0 ? 1.0 : 0.0);
-    // Better formula: perimeter ~ 4 * sqrt(areaSqm)
+    // Perimeter ~ 4 × √(area) for a square plan approximation
     final perimM = 4 * _sqrt(areaSqm);
     final wallThicknessM = p.wallThicknessMm / 1000.0;
     final grossWallArea = perimM * p.floorHeightM * p.numberOfFloors;

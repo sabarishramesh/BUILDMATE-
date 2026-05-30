@@ -18,7 +18,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   late String _projectType;
   late int _floors;
   late double _floorHeight;
-  bool _loading = false;
+
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   }
 
   Future<void> _save() async {
-    setState(() => _loading = true);
+
     final projects = [
       ...ProjectService.getActiveProjects(),
       ...ProjectService.getArchivedProjects(),
@@ -64,7 +64,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
     p.wallThicknessMm  = double.tryParse(_wallCtrl.text) ?? p.wallThicknessMm;
     await ProjectService.saveCalculation(p);
     if (!mounted) return;
-    setState(() => _loading = false);
+
     Navigator.pop(context);
   }
 

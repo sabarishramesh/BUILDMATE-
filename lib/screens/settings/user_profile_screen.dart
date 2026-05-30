@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
-import '../../constants/app_text_styles.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/common_widgets.dart';
 

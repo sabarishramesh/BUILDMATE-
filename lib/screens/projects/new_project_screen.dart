@@ -364,7 +364,6 @@ class _StepIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = ['Basics', 'Structure', 'Costs'];
     return Container(
       color: AppColors.white,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
