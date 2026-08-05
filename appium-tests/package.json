@@ -1,0 +1,16 @@
+{
+  "name": "nexusbuild-appium-tests",
+  "version": "1.0.0",
+  "description": "Appium Mobile E2E Functional Test Suite for NEXUSBUILD Flutter App with Excel Report Generation",
+  "main": "tests/appium-tests.js",
+  "scripts": {
+    "test": "node tests/appium-tests.js",
+    "test:android": "PLATFORM=android node tests/appium-tests.js",
+    "test:ios": "PLATFORM=ios node tests/appium-tests.js",
+    "generate-excel": "python scripts/generate_appium_excel_report.py"
+  },
+  "dependencies": {
+    "webdriverio": "^8.30.0",
+    "appium": "^2.5.1"
+  }
+}

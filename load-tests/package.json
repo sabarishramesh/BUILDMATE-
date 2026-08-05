@@ -1,0 +1,14 @@
+{
+  "name": "nexusbuild-baseline-load-tests",
+  "version": "1.0.0",
+  "description": "Baseline Load Testing Suite for NEXUSBUILD System - 100 VUs / 1 Minute Duration",
+  "main": "baseline-load-test.js",
+  "scripts": {
+    "test": "node baseline-load-test.js",
+    "start-mock-server": "node mock-server.js",
+    "run-full-benchmark": "node run-benchmark.js"
+  },
+  "dependencies": {
+    "autocannon": "^7.15.0"
+  }
+}

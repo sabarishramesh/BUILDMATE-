@@ -1,0 +1,14 @@
+{
+  "name": "nexusbuild-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium E2E Web Frontend Test Suite for NEXUSBUILD with Excel Report Generation",
+  "main": "tests/login-tests.js",
+  "scripts": {
+    "test": "node tests/login-tests.js",
+    "generate-excel": "node scripts/generate-excel.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.20.0",
+    "exceljs": "^4.4.0"
+  }
+}
