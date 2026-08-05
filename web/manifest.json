@@ -1,6 +1,6 @@
 {
-    "name": "nexus_build",
-    "short_name": "nexus_build",
+    "name": "BuildMate",
+    "short_name": "BuildMate",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -37,7 +37,7 @@ class UpgradeScreen extends StatelessWidget {
                 children: const [
                   Icon(Icons.workspace_premium, color: Colors.amber, size: 48),
                   SizedBox(height: 12),
-                  Text('Nexus Build Pro', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
+                  Text('BuildMate Pro', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
                   SizedBox(height: 4),
                   Text('The complete toolkit for construction professionals.',
                       style: TextStyle(color: Colors.white70, fontSize: 13), textAlign: TextAlign.center),

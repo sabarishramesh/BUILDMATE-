@@ -79,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Nexus Build',
+                    'BuildMate',
                     style: TextStyle(
                       color: AppColors.white,
                       fontSize: 32,

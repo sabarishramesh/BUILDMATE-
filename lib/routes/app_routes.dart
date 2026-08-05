@@ -28,6 +28,8 @@ class AppRoutes {
   static const String steelReinforcement = '/calculator/steel';
   static const String concreteMix      = '/calculator/concrete-mix';
   static const String unitConverter    = '/calculator/unit-converter';
+  static const String steelWeightCalculator = '/calculator/steel-weight';
+  static const String brickCountCalculator = '/calculator/brick-count';
 
   // Materials
   static const String materialsCatalog = '/materials';

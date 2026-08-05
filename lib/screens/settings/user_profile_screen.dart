@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../services/auth_service.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -38,12 +39,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   void _save() async {
     setState(() => _saving = true);
-    await Future.delayed(const Duration(milliseconds: 400));
+    await AuthService.updateProfile(
+      fullName: _nameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      phone: _phoneCtrl.text.trim(),
+      company: _companyCtrl.text.trim(),
+      licenseNumber: _licenseCtrl.text.trim(),
+    );
     if (!mounted) return;
     setState(() => _saving = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated.')),
-    );
+    NotificationHelper.showSuccess(context, 'Profile saved');
   }
 
   @override

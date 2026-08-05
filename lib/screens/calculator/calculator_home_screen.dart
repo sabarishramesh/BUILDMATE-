@@ -86,21 +86,36 @@ class CalculatorHomeScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 2.2,
+                childAspectRatio: 2.3,
                 children: [
-                  _QuickCalc(icon: Icons.swap_horiz, label: 'Unit Converter',
-                      onTap: () => Navigator.pushNamed(context, AppRoutes.unitConverter)),
-                  _QuickCalc(icon: Icons.water_drop_outlined, label: 'Concrete Mix',
-                      onTap: () => Navigator.pushNamed(context, AppRoutes.concreteMix)),
-                  _QuickCalc(icon: Icons.tune, label: 'Steel Weight',
-                      onTap: () {
-                        if (current != null) {
-                          Navigator.pushNamed(context, AppRoutes.steelReinforcement,
-                              arguments: current.id);
-                        }
-                      }),
-                  _QuickCalc(icon: Icons.grid_on_outlined, label: 'Brick Count',
-                      onTap: () => Navigator.pushNamed(context, AppRoutes.concreteMix)),
+                  _QuickCalc(
+                    icon: Icons.swap_horiz_rounded,
+                    iconBg: AppColors.iconBgBlue,
+                    iconColor: AppColors.primary,
+                    label: 'Unit Converter',
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.unitConverter),
+                  ),
+                  _QuickCalc(
+                    icon: Icons.water_drop_rounded,
+                    iconBg: AppColors.iconBgGreen,
+                    iconColor: AppColors.accentGreen,
+                    label: 'Concrete Mix',
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.concreteMix),
+                  ),
+                  _QuickCalc(
+                    icon: Icons.tune_rounded,
+                    iconBg: AppColors.iconBgOrange,
+                    iconColor: AppColors.warning,
+                    label: 'Steel Weight',
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.steelWeightCalculator),
+                  ),
+                  _QuickCalc(
+                    icon: Icons.grid_on_rounded,
+                    iconBg: AppColors.iconBgRed,
+                    iconColor: AppColors.error,
+                    label: 'Brick Count',
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.brickCountCalculator),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -195,27 +210,48 @@ class _CalcTile extends StatelessWidget {
 
 class _QuickCalc extends StatelessWidget {
   final IconData icon;
+  final Color iconBg;
+  final Color iconColor;
   final String label;
   final VoidCallback onTap;
-  const _QuickCalc({required this.icon, required this.label, required this.onTap});
+
+  const _QuickCalc({
+    required this.icon,
+    required this.iconBg,
+    required this.iconColor,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => AppCard(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            children: [
-              Icon(icon, color: AppColors.primary, size: 20),
-              const SizedBox(width: 8),
-              Expanded(child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))),
-            ],
-          ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: iconColor, size: 18),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textDark,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       );
 }

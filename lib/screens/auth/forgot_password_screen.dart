@@ -85,7 +85,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               else ...[
                 AppTextField(
                   label: 'Email Address',
-                  hint: 'engineer@nexusbuild.com',
+                  hint: 'engineer@buildmate.com',
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: const Icon(Icons.email_outlined,
@@ -110,7 +110,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(height: 60),
               Center(
-                child: Text('NexusBuild',
+                child: Text('BuildMate',
                     style: TextStyle(
                         color: AppColors.textLight.withOpacity(0.4),
                         fontSize: 18,

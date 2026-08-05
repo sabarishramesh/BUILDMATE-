@@ -112,7 +112,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 border: Border.all(color: AppColors.border),
               ),
               child: const Text(
-                'ⓘ  Notifications are local only. Since Nexus Build is fully offline, no push notifications are sent from a server.',
+                'ⓘ  Notifications are local only. Since BuildMate is fully offline, no push notifications are sent from a server.',
                 style: TextStyle(fontSize: 12, color: AppColors.textMedium),
               ),
             ),

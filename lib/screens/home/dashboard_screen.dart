@@ -59,34 +59,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       '${_greeting()}, ${user?.fullName.split(' ').first ?? 'User'} 👋',
                       style: AppTextStyles.heading3,
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.notifications_outlined,
-                              color: AppColors.textDark),
-                          onPressed: () => Navigator.pushNamed(
-                              context, AppRoutes.notifications),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                          context, AppRoutes.userProfile),
+                      child: CircleAvatar(
+                        backgroundColor: AppColors.primary,
+                        radius: 18,
+                        child: Text(
+                          (user?.fullName.isNotEmpty == true)
+                              ? user!.fullName
+                                  .substring(0, 2)
+                                  .toUpperCase()
+                              : 'U',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13),
                         ),
-                        GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                              context, AppRoutes.userProfile),
-                          child: CircleAvatar(
-                            backgroundColor: AppColors.primary,
-                            radius: 18,
-                            child: Text(
-                              (user?.fullName.isNotEmpty == true)
-                                  ? user!.fullName
-                                      .substring(0, 2)
-                                      .toUpperCase()
-                                  : 'U',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 13),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
@@ -118,31 +108,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  childAspectRatio: 1.6,
+                  childAspectRatio: 1.48,
                   children: [
                     _StatCard(
-                      icon: Icons.layers_outlined,
+                      icon: Icons.layers_rounded,
                       iconBg: AppColors.iconBgBlue,
                       iconColor: AppColors.primary,
                       value: '${totalConcrete.toStringAsFixed(0)} m³',
                       label: 'Concrete',
                     ),
                     _StatCard(
-                      icon: Icons.inventory_2_outlined,
+                      icon: Icons.inventory_2_rounded,
                       iconBg: AppColors.iconBgGreen,
                       iconColor: AppColors.accentGreen,
                       value: '${fmt.format(totalCement.toInt())} bags',
                       label: 'Cement',
                     ),
                     _StatCard(
-                      icon: Icons.linear_scale,
+                      icon: Icons.bolt_rounded,
                       iconBg: AppColors.iconBgOrange,
                       iconColor: AppColors.warning,
                       value: '${totalSteel.toStringAsFixed(2)} MT',
                       label: 'Steel',
                     ),
                     _StatCard(
-                      icon: Icons.grid_view_outlined,
+                      icon: Icons.grid_view_rounded,
                       iconBg: AppColors.iconBgRed,
                       iconColor: AppColors.error,
                       value: '${fmt.format(totalBricks)} nos',
@@ -207,23 +197,47 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            padding: const EdgeInsets.all(6),
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: iconBg,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: iconColor, size: 18),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
+          const SizedBox(height: 6),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(value, style: AppTextStyles.cardValue.copyWith(fontSize: 16)),
-              Text(label, style: AppTextStyles.bodySmall),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'monospace',
+                    color: AppColors.textDark,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textMedium,
+                ),
+              ),
             ],
           ),
         ],

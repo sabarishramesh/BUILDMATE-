@@ -104,9 +104,13 @@ class ProjectModel extends HiveObject {
   @HiveField(31)
   double carpentrycost;
 
+  @HiveField(32)
+  String userId;
+
   ProjectModel({
     required this.id,
     required this.name,
+    this.userId = '',
     this.projectType = 'Residential',
     this.location = '',
     this.clientName = '',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class AddCustomRateScreen extends StatefulWidget {
@@ -30,14 +31,10 @@ class _AddCustomRateScreenState extends State<AddCustomRateScreen> {
 
   void _save() {
     if (_nameCtrl.text.trim().isEmpty || _rateCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in material name and rate.')),
-      );
+      NotificationHelper.showError(context, 'Please fill in material name and rate.');
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Custom rate saved successfully.')),
-    );
+    NotificationHelper.showSuccess(context, 'Rates updated');
     Navigator.pop(context);
   }
 

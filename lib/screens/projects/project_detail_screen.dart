@@ -5,6 +5,7 @@ import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/project_service.dart';
 import '../../models/project_model.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
@@ -79,7 +80,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 setState(() {});
               } else if (v == 'archive') {
                 await ProjectService.archiveProject(project.id);
-                Navigator.pop(context);
+                if (mounted) {
+                  NotificationHelper.showSuccess(context, 'Project deleted');
+                  Navigator.pop(context);
+                }
               } else if (v == 'delete') {
                 final ok = await showDialog<bool>(
                   context: context,
@@ -94,7 +98,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                 );
                 if (ok == true) {
                   await ProjectService.deleteProject(project.id);
-                  if (mounted) Navigator.pop(context);
+                  if (mounted) {
+                    NotificationHelper.showSuccess(context, 'Project deleted');
+                    Navigator.pop(context);
+                  }
                 }
               }
             },
@@ -126,6 +133,8 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
                               Text(project.name, style: AppTextStyles.heading3),
                               const SizedBox(width: 8),
                               _Badge(project.projectType),
+                              const SizedBox(width: 8),
+                              const CostConfidenceBadge(),
                             ],
                           ),
                           if (project.location.isNotEmpty) ...[

@@ -17,7 +17,7 @@ class _HelpFaqScreenState extends State<HelpFaqScreen> {
     ['Is my data safe offline?',
       'Yes. All data is stored locally on your device using an encrypted database. Nothing is sent to any server.'],
     ['How is the cost estimate calculated?',
-      'The app uses your built-up area, number of floors, slab/wall thickness and current material rates to compute volumes, then applies phase percentages (Structural 40%, Finishing 25%, etc.).'],
+      'The app uses your built-up area, number of floors, slab/wall thickness and current material rates to compute volumes, then applies phase percentages (Structural, Finishing, Plumbing, Electrical, Carpentry).'],
     ['Can I change material rates?',
       'Yes. Go to Materials → Material Rates to view and update current prices, or add custom supplier-specific rates.'],
     ['How do I export a report?',
@@ -27,9 +27,7 @@ class _HelpFaqScreenState extends State<HelpFaqScreen> {
     ['How do I delete a project?',
       'Open the project → tap the three-dot menu → Archive or Delete. Archived projects can be restored later.'],
     ['Why is the OTP shown in a pop-up?',
-      'Nexus Build is 100% offline. Since there is no internet or SMS server, the OTP is generated locally and shown on screen. Write it down and enter it in the box.'],
-    ['How do I update material prices?',
-      'Go to Settings → Material Rates → tap any item to edit, or tap the + button to add a new rate.'],
+      'BuildMate is 100% offline. Since there is no internet or SMS server, the OTP is generated locally and shown on screen. Write it down and enter it in the box.'],
   ];
 
   @override
@@ -42,8 +40,8 @@ class _HelpFaqScreenState extends State<HelpFaqScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Help & FAQ', style: AppTextStyles.heading2),
-            Text('Answers to common questions about Nexus Build.', style: AppTextStyles.subtitle),
+            Text('Frequently Asked Questions', style: AppTextStyles.heading2),
+            Text('Answers to common questions about BuildMate.', style: AppTextStyles.subtitle),
             const SizedBox(height: 20),
             ..._faqs.asMap().entries.map((e) {
               final open = _expanded == e.key;
@@ -74,7 +72,7 @@ class _HelpFaqScreenState extends State<HelpFaqScreen> {
                       ),
                       if (open) ...[
                         const SizedBox(height: 8),
-                        Text(e.value[1], style: AppTextStyles.body),
+                        Text(e.value[1], style: AppTextStyles.bodySmall),
                       ],
                     ],
                   ),
@@ -96,7 +94,7 @@ class _HelpFaqScreenState extends State<HelpFaqScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Still need help?', style: AppTextStyles.body),
-                        Text('Contact support at help@nexusbuild.app', style: AppTextStyles.bodySmall),
+                        Text('Contact support at help@buildmate.app', style: AppTextStyles.bodySmall),
                       ],
                     ),
                   ),

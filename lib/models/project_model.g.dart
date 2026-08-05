@@ -49,13 +49,14 @@ class ProjectModelAdapter extends TypeAdapter<ProjectModel> {
       plumbingCost: fields[29] as double,
       electricalCost: fields[30] as double,
       carpentrycost: fields[31] as double,
+      userId: (fields[32] as String?) ?? '',
     );
   }
 
   @override
   void write(BinaryWriter writer, ProjectModel obj) {
     writer
-      ..writeByte(32)
+      ..writeByte(33)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -119,7 +120,9 @@ class ProjectModelAdapter extends TypeAdapter<ProjectModel> {
       ..writeByte(30)
       ..write(obj.electricalCost)
       ..writeByte(31)
-      ..write(obj.carpentrycost);
+      ..write(obj.carpentrycost)
+      ..writeByte(32)
+      ..write(obj.userId);
   }
 
   @override

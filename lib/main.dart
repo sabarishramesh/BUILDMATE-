@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'services/hive_service.dart';
 import 'services/material_rates_service.dart';
+import 'services/notification_service.dart';
 import 'constants/app_colors.dart';
 import 'routes/app_routes.dart';
 
@@ -26,6 +29,8 @@ import 'screens/calculator/material_estimate_screen.dart';
 import 'screens/calculator/steel_reinforcement_screen.dart';
 import 'screens/calculator/concrete_mix_screen.dart';
 import 'screens/calculator/unit_converter_screen.dart';
+import 'screens/calculator/steel_weight_calculator_screen.dart';
+import 'screens/calculator/brick_count_calculator_screen.dart';
 import 'screens/materials/materials_catalog_screen.dart';
 import 'screens/materials/material_detail_screen.dart';
 import 'screens/materials/wood_carpentry_screen.dart';
@@ -49,22 +54,26 @@ import 'screens/settings/notifications_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
   await HiveService.init();
   await MaterialRatesService.seedDefaultRates();
-  runApp(const NexusBuildApp());
+  await NotificationService.init();
+  runApp(const BuildMateApp());
 }
 
-class NexusBuildApp extends StatelessWidget {
-  const NexusBuildApp({super.key});
+class BuildMateApp extends StatelessWidget {
+  const BuildMateApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Nexus Build',
+      title: 'BuildMate',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
@@ -86,6 +95,8 @@ class NexusBuildApp extends StatelessWidget {
         AppRoutes.structuralDetails: (_) => const StructuralDetailsScreen(),
         AppRoutes.concreteMix:       (_) => const ConcreteMixScreen(),
         AppRoutes.unitConverter:     (_) => const UnitConverterScreen(),
+        AppRoutes.steelWeightCalculator: (_) => const SteelWeightCalculatorScreen(),
+        AppRoutes.brickCountCalculator: (_) => const BrickCountCalculatorScreen(),
         AppRoutes.materialsCatalog:  (_) => const MaterialsCatalogScreen(),
         AppRoutes.woodCarpentry:     (_) => const WoodCarpentryScreen(),
         AppRoutes.materialRates:     (_) => const MaterialRatesScreen(),

@@ -47,7 +47,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Complete Purchase', style: AppTextStyles.heading2),
-            Text('Upgrade to Nexus Build Pro.', style: AppTextStyles.subtitle),
+            Text('Upgrade to BuildMate Pro.', style: AppTextStyles.subtitle),
             const SizedBox(height: 20),
             const Text('SELECT PLAN', style: AppTextStyles.label),
             const SizedBox(height: 8),
@@ -86,7 +86,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
                 children: [
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     const Text('Plan', style: AppTextStyles.body),
-                    Text('Nexus Build Pro – $_plan',
+                    Text('BuildMate Pro – $_plan',
                         style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
                   ]),
                   const Divider(height: 24),

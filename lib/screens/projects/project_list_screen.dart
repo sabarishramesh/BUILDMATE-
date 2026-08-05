@@ -5,6 +5,7 @@ import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/project_service.dart';
 import '../../models/project_model.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class ProjectListScreen extends StatefulWidget {
@@ -32,6 +33,46 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
       list = list.where((p) => p.status == _filter).toList();
     }
     return list;
+  }
+
+  void _confirmDelete(ProjectModel p) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Project?'),
+        content: Text('Are you sure you want to delete "${p.name}"? You can undo this action within 5 seconds.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await ProjectService.archiveProject(p.id);
+              if (!mounted) return;
+              setState(() {});
+              NotificationHelper.showSuccess(context, 'Project deleted');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Deleted "${p.name}"'),
+                  duration: const Duration(seconds: 5),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    textColor: AppColors.accentGreen,
+                    onPressed: () async {
+                      await ProjectService.restoreProject(p.id);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ),
+              );
+            },
+            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -117,24 +158,16 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
             const SizedBox(height: 12),
             Expanded(
               child: projects.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.architecture,
-                              size: 64, color: AppColors.textLight),
-                          const SizedBox(height: 16),
-                          const Text('Found all your projects?',
-                              style: AppTextStyles.subtitle),
-                          const SizedBox(height: 4),
-                          TextButton(
-                            onPressed: () => Navigator.pushNamed(
-                                    context, AppRoutes.newProject)
-                                .then((_) => setState(() {})),
-                            child: const Text('Add your first project'),
-                          ),
-                        ],
-                      ),
+                  ? EmptyStateWidget(
+                      icon: Icons.architecture,
+                      title: 'No Projects Found',
+                      subtitle: _search.isNotEmpty || _filter != 'All'
+                          ? 'No projects match your search or filter criteria.'
+                          : 'Create your first construction project to calculate material estimates and costs.',
+                      actionLabel: 'New Project',
+                      onAction: () => Navigator.pushNamed(
+                              context, AppRoutes.newProject)
+                          .then((_) => setState(() {})),
                     )
                   : RefreshIndicator(
                       onRefresh: () async => setState(() {}),
@@ -172,7 +205,13 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                             style: AppTextStyles.heading3
                                                 .copyWith(fontSize: 16)),
                                       ),
-                                      _StatusBadge(p.projectType),
+                                      _StatusBadge(status: p.status.isNotEmpty ? p.status : 'Active', type: p.projectType),
+                                      const SizedBox(width: 4),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete_outline,
+                                            color: AppColors.textLight, size: 20),
+                                        onPressed: () => _confirmDelete(p),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 8),
@@ -261,29 +300,68 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
 }
 
 class _StatusBadge extends StatelessWidget {
+  final String status;
   final String type;
-  const _StatusBadge(this.type);
+  const _StatusBadge({required this.status, required this.type});
 
   @override
   Widget build(BuildContext context) {
-    final isComm = type == 'Commercial';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: isComm
-            ? AppColors.iconBgGreen
-            : AppColors.iconBgBlue,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        type.toUpperCase(),
-        style: TextStyle(
-          color: isComm ? AppColors.accentGreen : AppColors.primary,
-          fontSize: 9,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
+    Color bg;
+    Color fg;
+    switch (status) {
+      case 'Completed':
+        bg = AppColors.iconBgGreen;
+        fg = AppColors.accentGreen;
+        break;
+      case 'Draft':
+        bg = AppColors.iconBgOrange;
+        fg = AppColors.warning;
+        break;
+      case 'Active':
+      default:
+        bg = AppColors.iconBgBlue;
+        fg = AppColors.primary;
+        break;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            status.toUpperCase(),
+            style: TextStyle(
+              color: fg,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5,
+            ),
+          ),
         ),
-      ),
+        const SizedBox(width: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Text(
+            type.toUpperCase(),
+            style: const TextStyle(
+              color: AppColors.textMedium,
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

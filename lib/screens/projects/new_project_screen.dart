@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
+import '../../services/notification_service.dart';
 import '../../services/project_service.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class NewProjectScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
   final _clientCtrl   = TextEditingController();
   final _notesCtrl    = TextEditingController();
   String _projectType = 'Residential';
+  String _status      = 'Active';
   DateTime? _startDate;
 
   // Step 2 fields
@@ -35,6 +38,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
   bool _loading = false;
 
   static const _types = ['Residential', 'Commercial', 'Industrial', 'Villa'];
+  static const _statuses = ['Draft', 'Active', 'Completed'];
 
   @override
   void dispose() {
@@ -53,6 +57,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
       clientName: _clientCtrl.text.trim(),
       startDate: _startDate,
       notes: _notesCtrl.text.trim(),
+      status: _status,
     );
     project.builtUpAreaSqft = double.tryParse(_areaCtrl.text) ?? 0;
     project.numberOfFloors  = _floors;
@@ -60,8 +65,13 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
     project.slabThicknessMm = double.tryParse(_slabCtrl.text) ?? 150;
     project.wallThicknessMm = double.tryParse(_wallCtrl.text) ?? 230;
     await ProjectService.saveCalculation(project);
+    NotificationService.showNotification(
+      title: 'BuildMate',
+      body: 'Estimate saved for ${project.name}',
+    );
     if (!mounted) return;
     setState(() => _loading = false);
+    NotificationHelper.showSuccess(context, 'Project saved successfully');
     Navigator.pushReplacementNamed(context, AppRoutes.projectDetail,
         arguments: project.id);
   }
@@ -144,6 +154,20 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          Text('PROJECT STATUS', style: AppTextStyles.label),
+          const SizedBox(height: 6),
+          DropdownButtonFormField<String>(
+            value: _status,
+            items: _statuses.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+            onChanged: (v) => setState(() => _status = v ?? 'Active'),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.background,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+            ),
+          ),
+          const SizedBox(height: 16),
           AppTextField(label: 'Location/City', hint: 'Enter city name', controller: _locationCtrl),
           const SizedBox(height: 16),
           AppTextField(label: 'Client Name', hint: 'Full name or company', controller: _clientCtrl),
@@ -210,8 +234,9 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             controller: _areaCtrl,
             keyboardType: TextInputType.number,
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Enter area';
-              if (double.tryParse(v) == null) return 'Enter a number';
+              if (v == null || v.trim().isEmpty) return 'Enter area';
+              final val = double.tryParse(v);
+              if (val == null || val <= 0) return 'Enter a valid positive number';
               return null;
             },
           ),
@@ -243,6 +268,12 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             hint: '150',
             controller: _slabCtrl,
             keyboardType: TextInputType.number,
+            validator: (v) {
+              if (v == null || v.trim().isEmpty) return 'Enter slab thickness';
+              final val = double.tryParse(v);
+              if (val == null || val <= 0) return 'Enter a valid positive number';
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           AppTextField(
@@ -250,6 +281,12 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
             hint: '230',
             controller: _wallCtrl,
             keyboardType: TextInputType.number,
+            validator: (v) {
+              if (v == null || v.trim().isEmpty) return 'Enter wall thickness';
+              final val = double.tryParse(v);
+              if (val == null || val <= 0) return 'Enter a valid positive number';
+              return null;
+            },
           ),
         ],
       ),
@@ -271,6 +308,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
               const Divider(height: 20),
               _Row('Name', _nameCtrl.text),
               _Row('Type', _projectType),
+              _Row('Status', _status),
               _Row('Area', '${_areaCtrl.text} sq.ft'),
               _Row('Floors', '$_floors'),
               _Row('Slab', '${_slabCtrl.text} mm'),

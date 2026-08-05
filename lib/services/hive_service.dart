@@ -26,6 +26,11 @@ class HiveService {
     await Hive.openBox(kSettingsBox);
   }
 
+  static bool get isUserBoxOpen => Hive.isBoxOpen(kUserBox);
+  static bool get isProjectBoxOpen => Hive.isBoxOpen(kProjectBox);
+  static bool get isRatesBoxOpen => Hive.isBoxOpen(kRatesBox);
+  static bool get isSettingsBoxOpen => Hive.isBoxOpen(kSettingsBox);
+
   static Box<UserModel> get userBox => Hive.box<UserModel>(kUserBox);
   static Box<ProjectModel> get projectBox => Hive.box<ProjectModel>(kProjectBox);
   static Box<MaterialRateModel> get ratesBox => Hive.box<MaterialRateModel>(kRatesBox);

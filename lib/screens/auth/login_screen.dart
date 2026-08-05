@@ -3,6 +3,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth_service.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,8 +32,29 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _loading = false);
     if (err != null) {
       setState(() => _error = err);
+      NotificationHelper.showError(context, err);
     } else {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
+  }
+
+  Future<void> _googleSignIn() async {
+    setState(() { _loading = true; _error = null; });
+    try {
+      final credential = await AuthService.signInWithGoogle();
+      if (!mounted) return;
+      setState(() => _loading = false);
+      if (credential != null && credential.user != null) {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      final msg = 'Google sign in failed: ${e.toString()}';
+      setState(() {
+        _loading = false;
+        _error = msg;
+      });
+      NotificationHelper.showError(context, msg);
     }
   }
 
@@ -67,11 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Icon(Icons.domain, color: Colors.white, size: 36),
                 ),
                 const SizedBox(height: 8),
-                Text('BUILDPRO',
+                Text('BUILDMATE',
                     style: AppTextStyles.label.copyWith(
                         color: AppColors.primary, letterSpacing: 2)),
                 const SizedBox(height: 20),
-                Text('Welcome Back', style: AppTextStyles.heading2),
+                Text('Welcome Back v2', style: AppTextStyles.heading2),
                 const SizedBox(height: 4),
                 Text('Sign in to access your projects.',
                     style: AppTextStyles.subtitle),
@@ -82,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.error.withOpacity(0.1),
+                      color: AppColors.error.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(_error!,
@@ -93,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 AppTextField(
                   label: 'Email Address',
-                  hint: 'e.g. j.doe@nexusbuild.com',
+                  hint: 'e.g. j.doe@buildmate.com',
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: const Icon(Icons.email_outlined,
@@ -139,12 +161,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
                 _divider('OR CONTINUE WITH'),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _SocialBtn(label: 'GOOGLE', icon: Icons.g_mobiledata)),
-                    const SizedBox(width: 12),
-                    Expanded(child: _SocialBtn(label: 'APPLE', icon: Icons.apple)),
-                  ],
+                _SocialBtn(
+                  label: 'CONTINUE WITH GOOGLE',
+                  icon: Icons.g_mobiledata,
+                  onPressed: _googleSignIn,
                 ),
                 const SizedBox(height: 32),
                 Row(
@@ -190,20 +210,24 @@ class _LoginScreenState extends State<LoginScreen> {
 class _SocialBtn extends StatelessWidget {
   final String label;
   final IconData icon;
-  const _SocialBtn({required this.label, required this.icon});
+  final VoidCallback onPressed;
+  const _SocialBtn({required this.label, required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: () {},
-      icon: Icon(icon, size: 20),
-      label: Text(label,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.textDark,
-        side: const BorderSide(color: AppColors.border),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        padding: const EdgeInsets.symmetric(vertical: 12),
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 24),
+        label: Text(label,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.textDark,
+          side: const BorderSide(color: AppColors.border),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+        ),
       ),
     );
   }

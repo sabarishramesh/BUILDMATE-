@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
+import '../../services/project_service.dart';
 import '../../widgets/common_widgets.dart';
 
 class ReportsTabScreen extends StatelessWidget {
@@ -51,19 +52,24 @@ class ReportsTabScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const SectionTitle('RECENT REPORTS'),
             const SizedBox(height: 8),
-            _RecentReportCard(
-              title: 'Sunrise Villa – Full Estimate',
-              date: 'May 20, 2026',
-              size: '1.2 MB',
-              onTap: () => Navigator.pushNamed(context, AppRoutes.reportPreview),
-            ),
-            const SizedBox(height: 8),
-            _RecentReportCard(
-              title: 'Commercial Block A – Phase 1',
-              date: 'May 15, 2026',
-              size: '0.8 MB',
-              onTap: () => Navigator.pushNamed(context, AppRoutes.reportPreview),
-            ),
+            if (ProjectService.getActiveProjects().isEmpty)
+              EmptyStateWidget(
+                icon: Icons.assignment_outlined,
+                title: 'No Reports Generated Yet',
+                subtitle: 'Generate your first detailed construction estimate report.',
+                actionLabel: 'Generate Report',
+                onAction: () => Navigator.pushNamed(context, AppRoutes.generateReport),
+              )
+            else
+              ...ProjectService.getActiveProjects().take(3).map((p) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _RecentReportCard(
+                      title: '${p.name} – Full Estimate',
+                      date: 'Aug 03, 2026',
+                      size: '1.2 MB',
+                      onTap: () => Navigator.pushNamed(context, AppRoutes.reportPreview, arguments: p.id),
+                    ),
+                  )),
             const SizedBox(height: 20),
             const SectionTitle('EXPORT'),
             const SizedBox(height: 8),

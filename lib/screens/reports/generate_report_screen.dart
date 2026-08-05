@@ -3,6 +3,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/project_service.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class GenerateReportScreen extends StatefulWidget {
@@ -29,15 +30,14 @@ class _GenerateReportScreenState extends State<GenerateReportScreen> {
 
   void _generate() async {
     if (_selectedProjectId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a project first.')),
-      );
+      NotificationHelper.showError(context, 'Please select a project first.');
       return;
     }
     setState(() => _generating = true);
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
     setState(() => _generating = false);
+    NotificationHelper.showSuccess(context, 'Estimate ready');
     Navigator.pushNamed(context, AppRoutes.reportPreview, arguments: _selectedProjectId);
   }
 

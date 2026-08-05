@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../routes/app_routes.dart';
+import '../../services/notification_service.dart';
 import '../../services/project_service.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class EditProjectScreen extends StatefulWidget {
@@ -13,9 +15,10 @@ class EditProjectScreen extends StatefulWidget {
 }
 
 class _EditProjectScreenState extends State<EditProjectScreen> {
-  late final _nameCtrl, _locationCtrl, _clientCtrl, _notesCtrl,
+  late final TextEditingController _nameCtrl, _locationCtrl, _clientCtrl, _notesCtrl,
       _areaCtrl, _slabCtrl, _wallCtrl;
   late String _projectType;
+  late String _status;
   late int _floors;
   late double _floorHeight;
 
@@ -23,8 +26,11 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   @override
   void initState() {
     super.initState();
-    final p = ProjectService.getActiveProjects()
-        .firstWhere((p) => p.id == widget.projectId);
+    final projects = [
+      ...ProjectService.getActiveProjects(),
+      ...ProjectService.getArchivedProjects(),
+    ];
+    final p = projects.firstWhere((p) => p.id == widget.projectId);
     _nameCtrl     = TextEditingController(text: p.name);
     _locationCtrl = TextEditingController(text: p.location);
     _clientCtrl   = TextEditingController(text: p.clientName);
@@ -33,6 +39,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
     _slabCtrl     = TextEditingController(text: p.slabThicknessMm.toStringAsFixed(0));
     _wallCtrl     = TextEditingController(text: p.wallThicknessMm.toStringAsFixed(0));
     _projectType  = p.projectType;
+    _status       = p.status.isNotEmpty ? p.status : 'Active';
     _floors       = p.numberOfFloors;
     _floorHeight  = p.floorHeightM;
   }
@@ -54,6 +61,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
     final p = projects.firstWhere((p) => p.id == widget.projectId);
     p.name             = _nameCtrl.text.trim();
     p.projectType      = _projectType;
+    p.status           = _status;
     p.location         = _locationCtrl.text.trim();
     p.clientName       = _clientCtrl.text.trim();
     p.notes            = _notesCtrl.text.trim();
@@ -63,8 +71,12 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
     p.slabThicknessMm  = double.tryParse(_slabCtrl.text) ?? p.slabThicknessMm;
     p.wallThicknessMm  = double.tryParse(_wallCtrl.text) ?? p.wallThicknessMm;
     await ProjectService.saveCalculation(p);
+    NotificationService.showNotification(
+      title: 'BuildMate',
+      body: 'Estimate saved for ${p.name}',
+    );
     if (!mounted) return;
-
+    NotificationHelper.showSuccess(context, 'Project saved successfully');
     Navigator.pop(context);
   }
 
@@ -99,6 +111,21 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
               onChanged: (v) => setState(() => _projectType = v ?? _projectType),
+              decoration: InputDecoration(
+                filled: true, fillColor: AppColors.background,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text('PROJECT STATUS', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.8, color: AppColors.textMedium)),
+            const SizedBox(height: 6),
+            DropdownButtonFormField<String>(
+              value: _status,
+              items: ['Draft', 'Active', 'Completed']
+                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                  .toList(),
+              onChanged: (v) => setState(() => _status = v ?? _status),
               decoration: InputDecoration(
                 filled: true, fillColor: AppColors.background,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
@@ -160,6 +187,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                   if (ok == true) {
                     await ProjectService.deleteProject(widget.projectId);
                     if (mounted) {
+                      NotificationHelper.showSuccess(context, 'Project deleted');
                       Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home, (_) => false);
                     }
                   }

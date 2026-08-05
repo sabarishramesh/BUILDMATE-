@@ -12,25 +12,27 @@ class OfflineStorageScreen extends StatefulWidget {
 }
 
 class _OfflineStorageScreenState extends State<OfflineStorageScreen> {
-  int get _projectCount => HiveService.projectBox.length;
-  int get _ratesCount => HiveService.ratesBox.length;
+  int get _projectCount => HiveService.isProjectBoxOpen ? HiveService.projectBox.length : 0;
+  int get _ratesCount => HiveService.isRatesBoxOpen ? HiveService.ratesBox.length : 0;
+  int get _userCount => HiveService.isUserBoxOpen ? HiveService.userBox.length : 0;
+  int get _settingsCount => HiveService.isSettingsBoxOpen ? HiveService.settingsBox.length : 0;
 
   void _clearCache() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Clear Cache?'),
-        content: const Text('This will remove all temporary data but keep your projects and accounts intact.'),
+        title: const Text('Clear Temporary Files?'),
+        content: const Text('This action removes temporary cache files only. Your saved projects, material rates, and user accounts will remain completely safe and untouched.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Cache cleared.')),
+                const SnackBar(content: Text('Temporary cache files cleared. Your saved projects were untouched.')),
               );
             },
-            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+            child: const Text('Clear Temporary Files', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -59,9 +61,9 @@ class _OfflineStorageScreenState extends State<OfflineStorageScreen> {
                   const Divider(height: 24),
                   _Row('Material rates', '$_ratesCount'),
                   const Divider(height: 24),
-                  _Row('User accounts', '${HiveService.userBox.length}'),
+                  _Row('User accounts', '$_userCount'),
                   const Divider(height: 24),
-                  _Row('App settings', '${HiveService.settingsBox.length} entries'),
+                  _Row('App settings', '$_settingsCount entries'),
                 ],
               ),
             ),
@@ -118,7 +120,7 @@ class _OfflineStorageScreenState extends State<OfflineStorageScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            OutlineButton(text: 'Clear Cache', onPressed: _clearCache),
+            OutlineButton(text: 'Clear Temporary Files', onPressed: _clearCache),
           ],
         ),
       ),

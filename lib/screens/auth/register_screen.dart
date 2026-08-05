@@ -3,6 +3,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth_service.dart';
+import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -16,7 +17,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _form = GlobalKey<FormState>();
   final _nameCtrl  = TextEditingController();
   final _emailCtrl = TextEditingController();
-  final _phoneCtrl = TextEditingController();
   final _passCtrl  = TextEditingController();
   final _confCtrl  = TextEditingController();
   bool _obscure1 = true, _obscure2 = true;
@@ -29,24 +29,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final err = await AuthService.register(
       fullName: _nameCtrl.text.trim(),
       email: _emailCtrl.text.trim(),
-      phone: _phoneCtrl.text.trim(),
       password: _passCtrl.text,
     );
     if (!mounted) return;
     setState(() => _loading = false);
     if (err != null) {
       setState(() => _error = err);
+      NotificationHelper.showError(context, err);
     } else {
-      final otp = AuthService.generateOtp();
-      Navigator.pushNamed(context, AppRoutes.otp,
-          arguments: {'otp': otp, 'phone': _phoneCtrl.text.trim()});
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
+  }
+
+  Future<void> _googleSignIn() async {
+    setState(() { _loading = true; _error = null; });
+    try {
+      final credential = await AuthService.signInWithGoogle();
+      if (!mounted) return;
+      setState(() => _loading = false);
+      if (credential != null && credential.user != null) {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      final msg = 'Google sign in failed: ${e.toString()}';
+      setState(() {
+        _loading = false;
+        _error = msg;
+      });
+      NotificationHelper.showError(context, msg);
     }
   }
 
   @override
   void dispose() {
-    _nameCtrl.dispose(); _emailCtrl.dispose(); _phoneCtrl.dispose();
-    _passCtrl.dispose(); _confCtrl.dispose();
+    _nameCtrl.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    _confCtrl.dispose();
     super.dispose();
   }
 
@@ -77,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.error.withOpacity(0.1),
+                      color: AppColors.error.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(_error!,
@@ -96,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
                 AppTextField(
                   label: 'Email Address',
-                  hint: 'email@nexusbuild.com',
+                  hint: 'email@buildmate.com',
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: const Icon(Icons.email_outlined,
@@ -106,17 +126,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (!v.contains('@')) return 'Enter a valid email';
                     return null;
                   },
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  label: 'Phone Number',
-                  hint: '+1 (555) 000-0000',
-                  controller: _phoneCtrl,
-                  keyboardType: TextInputType.phone,
-                  prefixIcon: const Icon(Icons.phone_outlined,
-                      color: AppColors.textLight, size: 20),
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Enter your phone number' : null,
                 ),
                 const SizedBox(height: 16),
                 AppTextField(
@@ -134,8 +143,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: () => setState(() => _obscure1 = !_obscure1),
                   ),
                   validator: (v) {
-                    if (v == null || v.length < 6)
+                    if (v == null || v.length < 6) {
                       return 'Password must be at least 6 characters';
+                    }
                     return null;
                   },
                 ),
@@ -147,6 +157,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: _obscure2,
                   prefixIcon: const Icon(Icons.lock_outline,
                       color: AppColors.textLight, size: 20),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscure2 ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      color: AppColors.textLight, size: 20,
+                    ),
+                    onPressed: () => setState(() => _obscure2 = !_obscure2),
+                  ),
                   validator: (v) {
                     if (v != _passCtrl.text) return 'Passwords do not match';
                     return null;
@@ -158,9 +175,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
                 _divider('OR'),
                 const SizedBox(height: 16),
-                _SocialBtn(icon: Icons.g_mobiledata, label: 'Continue with Google'),
-                const SizedBox(height: 12),
-                _SocialBtn(icon: Icons.apple, label: 'Continue with Apple'),
+                _SocialBtn(
+                  icon: Icons.g_mobiledata,
+                  label: 'Continue with Google',
+                  onPressed: _googleSignIn,
+                ),
                 const SizedBox(height: 28),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +219,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 class _SocialBtn extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _SocialBtn({required this.icon, required this.label});
+  final VoidCallback onPressed;
+  const _SocialBtn({required this.icon, required this.label, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -208,13 +228,13 @@ class _SocialBtn extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: OutlinedButton.icon(
-        onPressed: () {},
-        icon: Icon(icon, size: 22),
+        onPressed: onPressed,
+        icon: Icon(icon, size: 24),
         label: Text(label,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textDark,
-          side: const BorderSide(color: AppColors.accentGreen),
+          side: const BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
