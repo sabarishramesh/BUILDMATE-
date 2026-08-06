@@ -52,18 +52,46 @@ import 'screens/settings/upgrade_screen.dart';
 import 'screens/settings/payment_checkout_screen.dart';
 import 'screens/settings/notifications_screen.dart';
 
+import 'package:flutter/foundation.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  await HiveService.init();
-  await MaterialRatesService.seedDefaultRates();
-  await NotificationService.init();
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase init log: $e');
+  }
+
+  if (!kIsWeb) {
+    try {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } catch (_) {}
+  }
+
+  try {
+    await HiveService.init();
+  } catch (e) {
+    debugPrint('Hive init log: $e');
+  }
+
+  try {
+    await MaterialRatesService.seedDefaultRates();
+  } catch (e) {
+    debugPrint('MaterialRates init log: $e');
+  }
+
+  try {
+    await NotificationService.init();
+  } catch (e) {
+    debugPrint('Notification init log: $e');
+  }
+
   runApp(const BuildMateApp());
 }
 
