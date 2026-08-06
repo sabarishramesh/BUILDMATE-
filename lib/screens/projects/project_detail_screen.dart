@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/project_service.dart';
 import '../../models/project_model.dart';
+import '../../utils/app_formatter.dart';
 import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
@@ -47,8 +47,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
         body: const Center(child: Text('Project not found')),
       );
     }
-
-    final fmt = NumberFormat('#,##,##0', 'en_IN');
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -201,9 +199,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
             child: TabBarView(
               controller: _tabs,
               children: [
-                _OverviewTab(project: project, fmt: fmt),
-                _MaterialsTab(project: project, fmt: fmt),
-                _CostsTab(project: project, fmt: fmt),
+                _OverviewTab(project: project),
+                _MaterialsTab(project: project),
+                _CostsTab(project: project),
                 _ReportsTab(project: project),
               ],
             ),
@@ -236,8 +234,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
 
 class _OverviewTab extends StatelessWidget {
   final ProjectModel project;
-  final NumberFormat fmt;
-  const _OverviewTab({required this.project, required this.fmt});
+  const _OverviewTab({required this.project});
 
   @override
   Widget build(BuildContext context) {
@@ -253,14 +250,14 @@ class _OverviewTab extends StatelessWidget {
             mainAxisSpacing: 12,
             childAspectRatio: 1.8,
             children: [
-              _GridCell('TOTAL AREA', '${project.builtUpAreaSqft.toInt()} sq.ft'),
+              _GridCell('TOTAL AREA', AppFormatter.formatArea(project.builtUpAreaSqft)),
               _GridCell('FLOORS', 'G+${project.numberOfFloors - 1}'),
               _GridCell('SLAB THICKNESS', '${project.slabThicknessMm.toInt()} mm'),
               _GridCell('WALL THICKNESS', '${project.wallThicknessMm.toInt()} mm'),
-              _GridCell('CONCRETE VOLUME', '${project.totalConcreteVolumeM3.toStringAsFixed(0)} m³'),
-              _GridCell('CEMENT', '${fmt.format(project.cementBags.toInt())} bags'),
-              _GridCell('STEEL', '${project.steelMT.toStringAsFixed(1)} MT'),
-              _GridCell('BRICKS', '${fmt.format(project.brickCount)} pcs'),
+              _GridCell('CONCRETE VOLUME', AppFormatter.formatVolume(project.totalConcreteVolumeM3)),
+              _GridCell('CEMENT', AppFormatter.formatCement(project.cementBags)),
+              _GridCell('STEEL', AppFormatter.formatSteel(project.steelMT)),
+              _GridCell('BRICKS', AppFormatter.formatBricks(project.brickCount, unit: 'pcs')),
             ],
           ),
         ],
@@ -291,17 +288,16 @@ class _GridCell extends StatelessWidget {
 
 class _MaterialsTab extends StatelessWidget {
   final ProjectModel project;
-  final NumberFormat fmt;
-  const _MaterialsTab({required this.project, required this.fmt});
+  const _MaterialsTab({required this.project});
 
   @override
   Widget build(BuildContext context) {
     final items = [
-      ['Cement (OPC 53)', '${fmt.format(project.cementBags.toInt())} bags'],
-      ['Steel / TMT', '${project.steelMT.toStringAsFixed(2)} MT'],
-      ['River Sand', '${project.sandM3.toStringAsFixed(2)} m³'],
-      ['Coarse Aggregate', '${project.aggregateM3.toStringAsFixed(2)} m³'],
-      ['Bricks (First Class)', '${fmt.format(project.brickCount)} nos'],
+      ['Cement (OPC 53)', AppFormatter.formatCement(project.cementBags)],
+      ['Steel / TMT', AppFormatter.formatSteel(project.steelMT)],
+      ['River Sand', AppFormatter.formatVolume(project.sandM3)],
+      ['Coarse Aggregate', AppFormatter.formatVolume(project.aggregateM3)],
+      ['Bricks (First Class)', AppFormatter.formatBricks(project.brickCount)],
     ];
     return ListView.separated(
       padding: const EdgeInsets.all(16),
@@ -319,8 +315,7 @@ class _MaterialsTab extends StatelessWidget {
 
 class _CostsTab extends StatelessWidget {
   final ProjectModel project;
-  final NumberFormat fmt;
-  const _CostsTab({required this.project, required this.fmt});
+  const _CostsTab({required this.project});
 
   @override
   Widget build(BuildContext context) {
@@ -340,7 +335,7 @@ class _CostsTab extends StatelessWidget {
             children: [
               const Text('TOTAL ESTIMATED COST', style: AppTextStyles.label),
               const SizedBox(height: 8),
-              Text('₹${fmt.format(project.totalEstimatedCost.toInt())}',
+              Text(AppFormatter.formatCost(project.totalEstimatedCost),
                   style: AppTextStyles.bigNumber),
             ],
           ),
@@ -353,7 +348,7 @@ class _CostsTab extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(p[0] as String, style: AppTextStyles.body),
-                    Text('₹${fmt.format((p[1] as double).toInt())}',
+                    Text(AppFormatter.formatCost(p[1] as double),
                         style: AppTextStyles.body
                             .copyWith(fontWeight: FontWeight.w600)),
                   ],

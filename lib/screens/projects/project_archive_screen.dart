@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../services/project_service.dart';
+import '../../utils/app_formatter.dart';
 import '../../widgets/common_widgets.dart';
 
 class ProjectArchiveScreen extends StatefulWidget {
@@ -101,7 +102,7 @@ class _ProjectArchiveScreenState extends State<ProjectArchiveScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     const Text('ESTIMATED COST', style: AppTextStyles.label),
-                                    Text('₹${fmt.format(p.totalEstimatedCost.toInt())}',
+                                    Text(AppFormatter.formatCost(p.totalEstimatedCost),
                                         style: AppTextStyles.body.copyWith(
                                             fontWeight: FontWeight.w700,
                                             color: AppColors.primary)),

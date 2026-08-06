@@ -3,6 +3,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/common_widgets.dart';
+import '../../utils/app_formatter.dart';
 
 import 'package:intl/intl.dart';
 import '../../services/hive_service.dart';
@@ -23,25 +24,25 @@ class ReportPreviewScreen extends StatelessWidget {
 
     final fmt = NumberFormat('#,##,##0', 'en_IN');
     final name = p?.name ?? 'Sunrise Villa';
-    final area = p != null ? '${p.builtUpAreaSqft.toInt()} sq.ft' : '2,400 sq.ft';
+    final area = p != null ? AppFormatter.formatArea(p.builtUpAreaSqft) : '2,400 sq.ft';
     final floors = p != null ? '${p.numberOfFloors}' : '3';
-    final slabVol = p != null ? '${p.slabVolumeM3.toStringAsFixed(1)} m³' : '100.3 m³';
-    final wallVol = p != null ? '${p.wallVolumeM3.toStringAsFixed(1)} m³' : '74.2 m³';
-    final totalConc = p != null ? '${p.totalConcreteVolumeM3.toStringAsFixed(1)} m³' : '112.98 m³';
+    final slabVol = p != null ? AppFormatter.formatVolume(p.slabVolumeM3) : '100.3 m³';
+    final wallVol = p != null ? AppFormatter.formatVolume(p.wallVolumeM3) : '74.2 m³';
+    final totalConc = p != null ? AppFormatter.formatVolume(p.totalConcreteVolumeM3) : '113.0 m³';
 
-    final cement = p != null ? '${fmt.format(p.cementBags.toInt())} bags' : '1,136 bags';
-    final steel = p != null ? '${p.steelMT.toStringAsFixed(2)} MT' : '8.87 MT';
-    final sand = p != null ? '${p.sandM3.toStringAsFixed(1)} m³' : '67.0 m³';
-    final agg = p != null ? '${p.aggregateM3.toStringAsFixed(1)} m³' : '104.4 m³';
-    final bricks = p != null ? '${fmt.format(p.brickCount)} units' : '37,088 units';
+    final cement = p != null ? AppFormatter.formatCement(p.cementBags) : '1,136 bags';
+    final steel = p != null ? AppFormatter.formatSteel(p.steelMT) : '8.87 MT';
+    final sand = p != null ? AppFormatter.formatVolume(p.sandM3) : '67.0 m³';
+    final agg = p != null ? AppFormatter.formatVolume(p.aggregateM3) : '104.4 m³';
+    final bricks = p != null ? AppFormatter.formatBricks(p.brickCount, unit: 'units') : '37,088 units';
 
-    final structCost = p != null ? '₹${fmt.format(p.structuralCost.toInt())}' : '₹21,03,738';
-    final finishCost = p != null ? '₹${fmt.format(p.finishingCost.toInt())}' : '₹6,09,779';
-    final plumbCost = p != null ? '₹${fmt.format(p.plumbingCost.toInt())}' : '₹2,28,667';
-    final electCost = p != null ? '₹${fmt.format(p.electricalCost.toInt())}' : '₹2,28,667';
-    final carpCost = p != null ? '₹${fmt.format(p.carpentrycost.toInt())}' : '₹1,82,933';
+    final structCost = p != null ? AppFormatter.formatCost(p.structuralCost) : '₹21,03,700';
+    final finishCost = p != null ? AppFormatter.formatCost(p.finishingCost) : '₹6,09,800';
+    final plumbCost = p != null ? AppFormatter.formatCost(p.plumbingCost) : '₹2,28,700';
+    final electCost = p != null ? AppFormatter.formatCost(p.electricalCost) : '₹2,28,700';
+    final carpCost = p != null ? AppFormatter.formatCost(p.carpentrycost) : '₹1,82,900';
 
-    final totalCost = p != null ? '₹${fmt.format(p.totalEstimatedCost.toInt())}' : '₹33,53,784';
+    final totalCost = p != null ? AppFormatter.formatCost(p.totalEstimatedCost) : '₹33,53,800';
     final perSqft = p != null && p.builtUpAreaSqft > 0
         ? 'Approx. ₹${(p.totalEstimatedCost / (p.builtUpAreaSqft * p.numberOfFloors)).toStringAsFixed(0)} per sq.ft'
         : 'Approx. ₹879 per sq.ft';

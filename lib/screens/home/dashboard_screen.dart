@@ -5,6 +5,7 @@ import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth_service.dart';
 import '../../services/project_service.dart';
+import '../../utils/app_formatter.dart';
 import '../../widgets/common_widgets.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -90,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const Text('TOTAL PORTFOLIO VALUE',
                           style: AppTextStyles.label),
                       const SizedBox(height: 8),
-                      Text('₹${fmt.format(totalCost.toInt())}',
+                      Text(AppFormatter.formatCost(totalCost),
                           style: AppTextStyles.bigNumber.copyWith(
                               fontSize: 28, color: AppColors.primary)),
                       const SizedBox(height: 4),
@@ -114,28 +115,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       icon: Icons.layers_rounded,
                       iconBg: AppColors.iconBgBlue,
                       iconColor: AppColors.primary,
-                      value: '${totalConcrete.toStringAsFixed(0)} m³',
+                      value: AppFormatter.formatVolume(totalConcrete),
                       label: 'Concrete',
                     ),
                     _StatCard(
                       icon: Icons.inventory_2_rounded,
                       iconBg: AppColors.iconBgGreen,
                       iconColor: AppColors.accentGreen,
-                      value: '${fmt.format(totalCement.toInt())} bags',
+                      value: AppFormatter.formatCement(totalCement),
                       label: 'Cement',
                     ),
                     _StatCard(
                       icon: Icons.bolt_rounded,
                       iconBg: AppColors.iconBgOrange,
                       iconColor: AppColors.warning,
-                      value: '${totalSteel.toStringAsFixed(2)} MT',
+                      value: AppFormatter.formatSteel(totalSteel),
                       label: 'Steel',
                     ),
                     _StatCard(
                       icon: Icons.grid_view_rounded,
                       iconBg: AppColors.iconBgRed,
                       iconColor: AppColors.error,
-                      value: '${fmt.format(totalBricks)} nos',
+                      value: AppFormatter.formatBricks(totalBricks),
                       label: 'Bricks',
                     ),
                   ],

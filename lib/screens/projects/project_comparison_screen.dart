@@ -4,6 +4,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../services/project_service.dart';
 import '../../models/project_model.dart';
+import '../../utils/app_formatter.dart';
 import '../../widgets/common_widgets.dart';
 
 class ProjectComparisonScreen extends StatefulWidget {
@@ -56,16 +57,16 @@ class _ProjectComparisonScreenState extends State<ProjectComparisonScreen> {
                   },
                   children: [
                     _headerRow('Metric', 'Project A', 'Project B'),
-                    _row('Total Area', '${_a!.builtUpAreaSqft.toInt()}', '${_b!.builtUpAreaSqft.toInt()}'),
+                    _row('Total Area', AppFormatter.formatArea(_a!.builtUpAreaSqft), AppFormatter.formatArea(_b!.builtUpAreaSqft)),
                     _row('Floors', 'G+${_a!.numberOfFloors - 1}', 'G+${_b!.numberOfFloors - 1}'),
-                    _row('Concrete Vol.', '${_a!.totalConcreteVolumeM3.toStringAsFixed(0)} m³', '${_b!.totalConcreteVolumeM3.toStringAsFixed(0)} m³'),
-                    _row('Cement Bags', fmt.format(_a!.cementBags.toInt()), fmt.format(_b!.cementBags.toInt())),
-                    _row('Steel (MT)', _a!.steelMT.toStringAsFixed(1), _b!.steelMT.toStringAsFixed(1)),
-                    _row('Bricks (k)', '${(_a!.brickCount / 1000).toStringAsFixed(0)}k', '${(_b!.brickCount / 1000).toStringAsFixed(0)}k'),
-                    _row('Est. Cost', '₹${fmt.format(_a!.totalEstimatedCost.toInt())}', '₹${fmt.format(_b!.totalEstimatedCost.toInt())}'),
+                    _row('Concrete Vol.', AppFormatter.formatVolume(_a!.totalConcreteVolumeM3), AppFormatter.formatVolume(_b!.totalConcreteVolumeM3)),
+                    _row('Cement Bags', AppFormatter.formatCement(_a!.cementBags), AppFormatter.formatCement(_b!.cementBags)),
+                    _row('Steel (MT)', AppFormatter.formatSteel(_a!.steelMT), AppFormatter.formatSteel(_b!.steelMT)),
+                    _row('Bricks', AppFormatter.formatBricks(_a!.brickCount), AppFormatter.formatBricks(_b!.brickCount)),
+                    _row('Est. Cost', AppFormatter.formatCost(_a!.totalEstimatedCost), AppFormatter.formatCost(_b!.totalEstimatedCost)),
                     _row('Cost/sq.ft',
-                      _a!.builtUpAreaSqft > 0 ? '₹${(_a!.totalEstimatedCost / _a!.builtUpAreaSqft).toStringAsFixed(0)}' : '-',
-                      _b!.builtUpAreaSqft > 0 ? '₹${(_b!.totalEstimatedCost / _b!.builtUpAreaSqft).toStringAsFixed(0)}' : '-',
+                      _a!.builtUpAreaSqft > 0 ? '₹${((_a!.totalEstimatedCost / _a!.builtUpAreaSqft) / 10).round() * 10}' : '-',
+                      _b!.builtUpAreaSqft > 0 ? '₹${((_b!.totalEstimatedCost / _b!.builtUpAreaSqft) / 10).round() * 10}' : '-',
                     ),
                   ],
                 ),

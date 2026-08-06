@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../constants/engineering_constants.dart';
 import '../../routes/app_routes.dart';
 import '../../services/hive_service.dart';
+import '../../utils/app_formatter.dart';
 import '../../widgets/common_widgets.dart';
 
 class MaterialEstimateScreen extends StatefulWidget {
@@ -40,7 +40,6 @@ class _MaterialEstimateScreenState extends State<MaterialEstimateScreen>
   Widget build(BuildContext context) {
     final p = HiveService.projectBox.get(widget.projectId);
     if (p == null) return const Scaffold(body: Center(child: Text('Project not found')));
-    final fmt = NumberFormat('#,##,##0', 'en_IN');
 
     final cementCost = p.cementBags * MaterialRates.cementPerBag;
     final steelCost = p.steelMT * MaterialRates.steelPerMT;
@@ -50,15 +49,15 @@ class _MaterialEstimateScreenState extends State<MaterialEstimateScreen>
     final totalMatCost = cementCost + steelCost + sandCost + aggCost + brickCost;
 
     final items = [
-      _MatItem('Cement', 'OPC 53 Grade', '${fmt.format(p.cementBags.toInt())} bags',
+      _MatItem('Cement', 'OPC 53 Grade', AppFormatter.formatCement(p.cementBags),
           cementCost, AppColors.primary, Icons.inventory_2_outlined),
-      _MatItem('Steel/TMT', 'Fe 500D', '${p.steelMT.toStringAsFixed(2)} MT',
+      _MatItem('Steel/TMT', 'Fe 500D', AppFormatter.formatSteel(p.steelMT),
           steelCost, AppColors.error, Icons.linear_scale),
-      _MatItem('River Sand', 'Fine Aggregate', '${p.sandM3.toStringAsFixed(2)} m³',
+      _MatItem('River Sand', 'Fine Aggregate', AppFormatter.formatVolume(p.sandM3),
           sandCost, const Color(0xFFD4A017), Icons.water_drop_outlined),
-      _MatItem('Coarse Aggregate', '20mm Crushed Stone', '${p.aggregateM3.toStringAsFixed(2)} m³',
+      _MatItem('Coarse Aggregate', '20mm Crushed Stone', AppFormatter.formatVolume(p.aggregateM3),
           aggCost, AppColors.textMedium, Icons.circle_outlined),
-      _MatItem('Bricks', 'First Class Red Bricks', '${fmt.format(p.brickCount)} nos',
+      _MatItem('Bricks', 'First Class Red Bricks', AppFormatter.formatBricks(p.brickCount),
           brickCost, const Color(0xFF8B4513), Icons.grid_view_outlined),
     ];
 
@@ -113,7 +112,7 @@ class _MaterialEstimateScreenState extends State<MaterialEstimateScreen>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const Text('TOTAL AREA', style: AppTextStyles.label),
-                    Text('${p.builtUpAreaSqft.toInt()} sq.ft',
+                    Text(AppFormatter.formatArea(p.builtUpAreaSqft),
                         style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
                     Text('G+${p.numberOfFloors - 1} Levels',
                         style: AppTextStyles.bodySmall),
@@ -262,7 +261,7 @@ class _MaterialEstimateScreenState extends State<MaterialEstimateScreen>
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(m.qty, style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700)),
-                                Text('₹${fmt.format(m.cost.toInt())}',
+                                Text(AppFormatter.formatCost(m.cost),
                                     style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMedium)),
                               ],
                             ),
@@ -275,9 +274,9 @@ class _MaterialEstimateScreenState extends State<MaterialEstimateScreen>
                 const SizedBox(height: 8),
                 const SectionTitle('FINISHING MATERIALS'),
                 ...[
-                  ['Tiles/Flooring', '${p.builtUpAreaSqft.toInt()} sq.ft estimated'],
-                  ['Plaster', '${(p.builtUpAreaSqft * 2).toInt()} sq.ft total wall'],
-                  ['Paint', '${(p.builtUpAreaSqft * 0.35).toInt()} Liters (3 Coats)'],
+                  ['Tiles/Flooring', '${AppFormatter.formatArea(p.builtUpAreaSqft)} estimated'],
+                  ['Plaster', '${AppFormatter.formatArea(p.builtUpAreaSqft * 2)} total wall'],
+                  ['Paint', '${(p.builtUpAreaSqft * 0.35).ceil()} Liters (3 Coats)'],
                   ['Wood', 'Teak – 450 cu.ft'],
                 ].map((item) => Padding(
                       padding: const EdgeInsets.only(bottom: 6),
@@ -318,7 +317,7 @@ class _MaterialEstimateScreenState extends State<MaterialEstimateScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('ESTIMATED TOTAL', style: AppTextStyles.label),
-                Text('₹${fmt.format(p.totalEstimatedCost.toInt())}',
+                Text(AppFormatter.formatCost(p.totalEstimatedCost),
                     style: AppTextStyles.heading3.copyWith(color: AppColors.primary)),
               ],
             ),
