@@ -1,44 +1,4 @@
-# Miscellaneous & System Files
-*.class
-*.log
-*.pyc
-*.swp
-*.swo
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-
-# Secrets, Environment & Keys
-.env
-.env.*
-!.env.example
-*.keystore
-*.jks
-*.p12
-*.pem
-*.pfx
-key.properties
-android/app/google-services.json
-ios/Runner/GoogleService-Info.plist
-
-# IDEs and Editors
-*.iml
-*.ipr
-*.iws
-.idea/
-.vscode/
-
-# Flutter / Dart / Pub related
+# Flutter / Dart / Pub build & tooling ignores
 /build/
 .dart_tool/
 .flutter-plugins
@@ -46,40 +6,22 @@ ios/Runner/GoogleService-Info.plist
 .packages
 .pub-cache/
 .pub/
-**/doc/api/
-**/ios/Flutter/.last_build_id
-/coverage/
 
-# Android specific
-/android/app/debug
-/android/app/profile
-/android/app/release
-/android/local.properties
-/android/.gradle/
-.gradle/
-/android/captures/
+# Secrets, API Keys & Credentials
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+*.keystore
+*.jks
+.env
+.env.*
+key.properties
 
-# iOS / macOS specific
-ios/Pods/
-ios/.symlinks/
-ios/Flutter/App.framework
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
-ios/Flutter/Generated.xcconfig
-ios/Flutter/app.flt
-ios/DerivedData/
-*.pbxuser
-*.mode1v3
-*.mode2v3
-*.stormychannels
-*.moved-aside
-xcuserdata/
+# IDEs & Editor ignores
+.idea/
+*.iml
+.vscode/
 
-# Desktop support
-/windows/flutter/ephemeral/
-/linux/flutter/ephemeral/
-/macos/flutter/ephemeral/
-
-# Symbolication & Obfuscation
-app.*.symbols
-app.*.map.json
+# System & OS files
+.DS_Store
+Thumbs.db
+*.log
