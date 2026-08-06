@@ -5,7 +5,6 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../services/export_service.dart';
 import '../../services/hive_service.dart';
-import '../../utils/app_formatter.dart';
 import '../../services/notification_service.dart';
 import '../../services/project_service.dart';
 import '../../utils/notification_helper.dart';
@@ -152,13 +151,13 @@ class _ShareExportScreenState extends State<ShareExportScreen> {
 📍 *Location:* ${location.isNotEmpty ? location : 'Main Site'}
 📐 *Area:* $area
 
-💰 *TOTAL ESTIMATED COST:* ${AppFormatter.formatCost(totalCost)}
+💰 *TOTAL ESTIMATED COST:* ₹${fmt.format(totalCost.toInt())}
 
 *KEY MATERIAL BREAKDOWN:*
-• Concrete: ${AppFormatter.formatVolume(concrete)}
-• Cement: ${AppFormatter.formatCement(cement)}
-• Steel: ${AppFormatter.formatSteel(steel)}
-• Bricks: ${AppFormatter.formatBricks(bricks)}
+• Concrete: ${concrete.toStringAsFixed(1)} m³
+• Cement: ${cement.toInt()} bags
+• Steel: ${steel.toStringAsFixed(2)} MT
+• Bricks: ${fmt.format(bricks)} nos
 
 Generated via BuildMate Estimator''';
 

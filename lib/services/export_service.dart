@@ -7,7 +7,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
-import '../utils/app_formatter.dart';
 
 class ExportService {
   /// Generates a PDF report as Uint8List using the printing/pdf package.
@@ -79,12 +78,12 @@ class ExportService {
                 pw.TableHelper.fromTextArray(
                   headers: ['Item Description', 'Quantity', 'Unit'],
                   data: [
-                    ['Concrete Volume', AppFormatter.formatVolume(concrete, unit: ''), 'm3'],
-                    ['Cement Bags', AppFormatter.formatCement(cement).replaceAll(' bags', ''), 'bags'],
-                    ['Steel Tonnage', AppFormatter.formatSteel(steel).replaceAll(' MT', ''), 'MT'],
-                    ['Bricks Count', AppFormatter.formatBricks(bricks, unit: '').trim(), 'nos'],
-                    ['Sand Volume', AppFormatter.formatVolume(sand, unit: ''), 'm3'],
-                    ['Aggregate Volume', AppFormatter.formatVolume(aggregate, unit: ''), 'm3'],
+                    ['Concrete Volume', concrete.toStringAsFixed(1), 'm3'],
+                    ['Cement Bags', '${cement.toInt()}', 'bags'],
+                    ['Steel Tonnage', steel.toStringAsFixed(2), 'MT'],
+                    ['Bricks Count', '$bricks', 'nos'],
+                    ['Sand Volume', sand.toStringAsFixed(1), 'm3'],
+                    ['Aggregate Volume', aggregate.toStringAsFixed(1), 'm3'],
                   ],
                   headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   cellAlignment: pw.Alignment.centerLeft,
@@ -107,7 +106,7 @@ class ExportService {
                         ),
                       ),
                       pw.Text(
-                        'Rs ${AppFormatter.formatCostRaw(totalCost)}',
+                        'Rs ${fmt.format(totalCost.toInt())}',
                         style: pw.TextStyle(
                           fontSize: 14,
                           fontWeight: pw.FontWeight.bold,

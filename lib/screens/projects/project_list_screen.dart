@@ -5,7 +5,6 @@ import '../../constants/app_text_styles.dart';
 import '../../routes/app_routes.dart';
 import '../../services/project_service.dart';
 import '../../models/project_model.dart';
-import '../../utils/app_formatter.dart';
 import '../../utils/notification_helper.dart';
 import '../../widgets/common_widgets.dart';
 
@@ -232,12 +231,12 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                   const SizedBox(height: 8),
                                   Row(
                                     children: [
-                                       _InfoCell('AREA',
-                                           AppFormatter.formatArea(p.builtUpAreaSqft)),
-                                       const SizedBox(width: 24),
-                                       _InfoCell('ESTIMATED COST',
-                                           AppFormatter.formatCost(p.totalEstimatedCost),
-                                           valueColor: AppColors.primary),
+                                      _InfoCell('AREA',
+                                          '${p.builtUpAreaSqft.toInt()} sq.ft'),
+                                      const SizedBox(width: 24),
+                                      _InfoCell('ESTIMATED COST',
+                                          '₹${fmt.format(p.totalEstimatedCost.toInt())}',
+                                          valueColor: AppColors.primary),
                                     ],
                                   ),
                                   const SizedBox(height: 10),

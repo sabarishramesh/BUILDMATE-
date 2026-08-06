@@ -7,7 +7,6 @@ import '../../widgets/common_widgets.dart';
 
 import 'package:intl/intl.dart';
 import '../../models/project_model.dart';
-import '../../utils/app_formatter.dart';
 
 class StructuralDetailsScreen extends StatefulWidget {
   const StructuralDetailsScreen({super.key});
@@ -235,7 +234,7 @@ class _StructuralDetailsScreenState extends State<StructuralDetailsScreen> {
                     ),
                     preview != null
                         ? Text(
-                            'Concrete ~${AppFormatter.formatVolume(preview.totalConcreteVolumeM3)} · ${AppFormatter.formatCost(preview.structuralCost)}',
+                            'Concrete ~${preview.totalConcreteVolumeM3.toStringAsFixed(1)} m³ · ₹${fmt.format(preview.structuralCost.toInt())}',
                             style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               color: AppColors.textDark,
